@@ -2,7 +2,7 @@ from time import sleep
 
 from loguru import logger
 
-from config import GAMES_ID
+from config import GAMES_ID, TIME_SLEEP
 from src.database import (create_table, get_last_post, set_last_post,
                       update_last_post)
 from src.discord import send_to_discord_webhook
@@ -17,7 +17,6 @@ def check_feed():
             logger.info(f"Processing game {game_id}")
             feed = get_feed(game_id)
             last_post = get_last_post(game_id)
-            logger.info(f"Last post: {last_post}")
             if last_post is None:
                 logger.info(f"No last post for game {game_id}")
                 set_last_post(game_id, feed[0]["_tsDateAdded"])
@@ -37,8 +36,8 @@ def check_feed():
 def main():
     while True:
         check_feed()
-        logger.info("Sleeping for 5 minutes")
-        sleep(300)
+        logger.info(f"Sleeping for {TIME_SLEEP} minutes")
+        sleep(TIME_SLEEP)
 
 
 if __name__ == "__main__":
