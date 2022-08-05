@@ -1,0 +1,4 @@
+loguru
+requests
+psycopg2
+bs4
