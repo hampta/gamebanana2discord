@@ -88,5 +88,7 @@ def create_embed(post, game_name, game_icon_url, section):
             "url": post["_aFiles"][0]["_sDownloadUrl"],
             "icon_url": DOWNLOAD_ICON,
         }
-
+    if post["_bIsNsfw"]:
+        embed['embeds'][0]['color'] = 0xff0000
+        embed['embeds'][0]['image'] |= {"url": "https://cdn.discordapp.com/attachments/942477980167446538/1005394994653311016/unknown.png"}
     return embed
