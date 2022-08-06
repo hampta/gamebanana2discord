@@ -18,7 +18,7 @@ def check_feed():
             last_post = db.get_last_post(game_id)
             for post in feed[::-1]:
                 if last_post is None or post['_tsDateAdded'] > last_post:
-                    logger.info(f"New post: {post['_tsDateAdded']}")
+                    logger.debug(f"New post: {post['_tsDateAdded']}")
                     post_info = gb.get_mod_info(post["_sModelName"], post["_idRow"])
                     game = next(item for item in gb.games if item["_idRow"] == game_id)
                     send_to_discord_webhook(post_info, game['_sName'], game['_sIconUrl'], post["_sSingularTitle"])
