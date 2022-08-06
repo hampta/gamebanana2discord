@@ -6,8 +6,6 @@ from loguru import logger
 
 from src.utils import create_embed
 
-logger = logger.bind(name='discord')
-
 
 def send_to_discord_webhook(post, game, icon, section):
     embed = create_embed(post, game, icon, section)

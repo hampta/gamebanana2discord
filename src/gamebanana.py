@@ -1,8 +1,5 @@
 import requests
 from config import BASE_URL
-from loguru import logger
-
-logger = logger.bind(name='gamebanana')
 
 
 class GameBanana:
