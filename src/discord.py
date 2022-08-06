@@ -14,9 +14,10 @@ def send_to_discord_webhook(post, game, icon, section):
         result.raise_for_status()
     except requests.exceptions.HTTPError as err:
         if result.status_code == 429:
+            time = int(result.headers['Retry-After']) / 1000
             logger.info(
-                f"Rate limit exceeded, sleeping for {result.headers['Retry-After']} milliseconds")
-            sleep(int(result.headers['Retry-After']) / 1000)
+                f"Rate limit exceeded, sleeping for {time} seconds")
+            sleep(time)
             send_to_discord_webhook(post, game, icon, section)
         else:
             logger.exception(err)
