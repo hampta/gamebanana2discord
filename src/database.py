@@ -1,8 +1,7 @@
 import psycopg2
 import psycopg2.extras
-from loguru import logger
-
 from config import DATABASE_URL
+from loguru import logger
 
 
 class Database:

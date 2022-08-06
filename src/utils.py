@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from bs4 import BeautifulSoup
-from config import BASE_URL, DOWNLOAD_ICON
+from config import DOWNLOAD_ICON
 import math
 
 
