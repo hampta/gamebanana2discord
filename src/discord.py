@@ -22,5 +22,5 @@ def send_to_discord_webhook(post, game, icon, section):
             send_to_discord_webhook(post, game, icon, section)
         logger.exception(err)
     else:
-        logger.info(
+        logger.debug(
             f"Payload delivered successfully, code {result.status_code}.")
