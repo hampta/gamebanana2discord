@@ -20,7 +20,8 @@ def send_to_discord_webhook(post, game, icon, section):
                 f"Rate limit exceeded, sleeping for {result.headers['Retry-After']} milliseconds")
             sleep(int(result.headers['Retry-After']) / 1000)
             send_to_discord_webhook(post, game, icon, section)
-        logger.exception(err)
+        else:
+            logger.exception(err)
     else:
         logger.debug(
             f"Payload delivered successfully, code {result.status_code}.")
