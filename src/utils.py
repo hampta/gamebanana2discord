@@ -2,8 +2,7 @@ from datetime import datetime
 
 from bs4 import BeautifulSoup
 from config import BASE_URL, DOWNLOAD_ICON
-
-from src.gamebanana import get_download_url, get_game_info
+import math
 
 
 def convert_article(v) -> str:
@@ -18,67 +17,76 @@ def convert_article(v) -> str:
         text = f"{title}\n{text}"
     return text
 
+
+def convert_size(size_bytes):
+    if size_bytes == 0:
+        return "0B"
+    size_name = "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"
+    i = int(math.floor(math.log(size_bytes, 1024)))
+    p = math.pow(1024, i)
+    s = round(size_bytes / p, 2)
+    return f"{s} {size_name[i]}"
+
+
 def cut_string(string, max_length):
     return f'{string[:max_length]}...' if len(string) > max_length else string
 
-def create_embed(post, game_id):
-    game_name, game_icon = get_game_info(game_id)
-    description = convert_article(post['_sArticle'])
+
+def create_embed(post, game_name, game_icon_url, section):
+    description = convert_article(post['_sText'])
     description = cut_string(description, 256)
     embed: dict = {
         "username": game_name,
-        "avatar_url": game_icon,
+        "avatar_url": game_icon_url,
         "embeds": [
             {
                 "title": post['_sName'],
                 "description": description,
                 "url": post['_sProfileUrl'],
-                "color": 0xffff00,
-                "author": {
-                    "name": "Download",
-                    "url": get_download_url(post['_idItemRow']),
-                    "icon_url": DOWNLOAD_ICON,
-                },
+                'author': {},
+                "color": 0x00ff00,
                 "image": {
-                    "url": f"{BASE_URL}/mods/embeddables/{post['_idItemRow']}?type=sd_image"
+                    "url": post["_aEmbeddables"]["_sEmbeddableImageBaseUrl"] + "?type=sd_image",
                 },
                 "footer": {
-                    "text": post['_aOwner']['_sUsername'],
-                    "icon_url": post['_aOwner']['_sAvatarUrl'],
+                    "text": post['_aSubmitter']['_sName'],
+                    "icon_url": post['_aSubmitter']['_sAvatarUrl'],
                 },
-                "fields": [],
+                "fields": [
+                    {
+                        "name": "Section",
+                        "value": section,
+                        "inline": True,
+                    }
+                ],
                 "timestamp": datetime.fromtimestamp(post['_tsDateAdded']).isoformat(),
             }
         ]
     }
-    embed["embeds"][0]["fields"].append(
-        {
+    if '_aSuperCategory' in post:
+        embed['embeds'][0]['fields'].append({
             "name": "Category",
-            "value": post['_aRootCategory']['_sName'],
+            "value": post['_aSuperCategory']['_sName'],
             "inline": True
-        }
-    )
-    if post['_aSuperCategory']['_sName'] is not None and post['_aSuperCategory']['_sName'] != post['_aRootCategory']['_sName']:
-        embed['embeds'][0]['fields'].append(
-            {
-                "name": "SubCategory",
-                "value": post['_aSuperCategory']['_sName'],
-                "inline": True
-            }
-        )
-    embed["embeds"][0]["fields"].append(
-        {
-            "name": "Section",
-            "value": post['_aCategory']['_sName'],
-            "inline": True
-        }
-    )
-    if post['_aStudio']['_sStudioName'] is not None:
+        })
+    embed['embeds'][0]['fields'].append({
+        "name": "Sub-Category",
+        "value": post['_aCategory']['_sName'],
+        "inline": True
+    })
+    if "_aStudio" in post:
         embed['embeds'][0]['fields'].append(
             {
                 "name": "Studio",
-                "value": post['_aStudio']['_sStudioName'],
+                "value": post['_aStudio']['_sName'],
                 "inline": True
             }
         )
+    if "_aFiles" in post:
+        embed['embeds'][0]['author'] |= {
+            "name": f"Download: {convert_size(post['_aFiles'][0]['_nFilesize'])} ",
+            "url": post["_aFiles"][0]["_sDownloadUrl"],
+            "icon_url": DOWNLOAD_ICON,
+        }
+
     return embed

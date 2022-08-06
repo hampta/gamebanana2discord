@@ -5,26 +5,26 @@ from loguru import logger
 logger = logger.bind(name='gamebanana')
 
 
-def get_game_info(game_id) -> list:
-    url = f"{BASE_URL}/apiv9/Member/UiConfig?_sUrl=%2Fgames%2F{game_id}"
-    response = requests.get(url).json()['_aGame']
-    return response['_sName'], response['_sIconUrl']
+class GameBanana:
 
+    def __init__(self, games_ids) -> None:
+        self.games = self.get_bulk_games(games_ids)
 
-def get_feed(game_id: int) -> str:
-    url = f"{BASE_URL}/mods/games/{game_id}?api=SubmissionsListModule"
-    feed = requests.get(url).json()["_aCellValues"]
-    feed.sort(key=lambda x: -x['_tsDateAdded'])
-    return feed
+    def get_game_info(self, game_id) -> list:
+        return requests.get(f"{BASE_URL}/Member/UiConfig?_sUrl=%2Fgames%2F{game_id}").json()
 
+    def get_feed(self, game_id: int, page=1, perpage=50, mode="new") -> str:
+        return requests.get(f"{BASE_URL}/Util/Game/Submissions?_idGameRow={game_id}&_nPage={page}&_nPerpage={perpage}&_sMode={mode}").json()
 
-def get_download_url(id) -> str:
-    request = requests.get(
-        f"{BASE_URL}/apiv9/Mod/{id}/DownloadPage")
-    if request.text != '':
-        return request.json()['_aFiles'][0]['_sDownloadUrl']
-    return None
+    def get_mod_info(self, submission_type, id) -> dict:
+        return requests.get(f"{BASE_URL}/{submission_type}/{id}/ProfilePage").json()
 
+    def get_download_url(self, id) -> str:
+        request = requests.get(
+            f"{BASE_URL}/Mod/{id}/DownloadPage")
+        if request.text != '':
+            return request.json()['_aFiles'][0]['_sDownloadUrl']
+        return None
 
-def get_bulk_game_names(ids) -> list:
-    return [get_game_info(id)[0] for id in ids]
+    def get_bulk_games(self, ids) -> list:
+        return [self.get_game_info(id)['_aGame'] for id in ids]

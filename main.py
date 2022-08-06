@@ -5,27 +5,24 @@ from loguru import logger
 from config import GAMES_ID, TIME_SLEEP
 from src.database import Database
 from src.discord import send_to_discord_webhook
-from src.gamebanana import get_bulk_game_names, get_feed
+from src.gamebanana import GameBanana
 
 db = Database()
-
+gb = GameBanana(GAMES_ID)
 
 def check_feed():
     try:
         for game_id in GAMES_ID:
             logger.info(f"Processing game {game_id}")
-            feed = get_feed(game_id)
+            feed = gb.get_feed(game_id)
             last_post = db.get_last_post(game_id)
-            if last_post is None:
-                logger.info(f"No last post for game {game_id}")
-                db.set_last_post(game_id, feed[0]["_tsDateAdded"])
-                send_to_discord_webhook(feed[0], game_id)
-                continue
-            for post in feed:
-                if post['_tsDateAdded'] > last_post:
+            for post in feed[::-1]:
+                if last_post is None or post['_tsDateAdded'] > last_post:
                     logger.info(f"New post: {post['_tsDateAdded']}")
-                    send_to_discord_webhook(post, game_id)
-                    db.update_last_post(game_id, post['_tsDateAdded'])
+                    post_info = gb.get_mod_info(post["_sModelName"], post["_idRow"])
+                    game = next(item for item in gb.games if item["_idRow"] == game_id)
+                    send_to_discord_webhook(post_info, game['_sName'], game['_sIconUrl'], post["_sSingularTitle"])
+                    db.update_or_create_last_post(game_id, post['_tsDateAdded'])
     except Exception as e:
         logger.exception(e)
         sleep(5)
@@ -41,8 +38,7 @@ def main():
 
 if __name__ == "__main__":
     logger.info("Starting...")
-    games = get_bulk_game_names(GAMES_ID)
-    games_str = ", ".join(games)
-    logger.info(f"Games: {games_str}")
+    games = [game["_sName"] for game in gb.games]
+    logger.info(f"Games: {', '.join(games)}")
     db.create_table()
     main()

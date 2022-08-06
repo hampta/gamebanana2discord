@@ -49,6 +49,14 @@ class Database:
             f'UPDATE posts SET last_post_id = {post_id} WHERE game_id = {game_id}')
         self.conn.commit()
 
+    def __update_or_create_last_post(self, game_id, post_id):
+        self.cursor.execute(
+            f'SELECT last_post_id FROM posts WHERE game_id = {game_id}')
+        if self.cursor.rowcount:
+            self.__update_last_post(game_id, post_id)
+        else:
+            self.__set_last_post(game_id, post_id)
+
     def __get_last_post(self, game_id):
         self.cursor.execute(
             f'SELECT last_post_id FROM posts WHERE game_id = {game_id}')
@@ -65,3 +73,6 @@ class Database:
 
     def get_last_post(self, game_id):
         return self.__execute(self.__get_last_post, game_id)
+
+    def update_or_create_last_post(self, game_id, post_id):
+        return self.__execute(self.__update_or_create_last_post, game_id, post_id)
