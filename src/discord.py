@@ -29,7 +29,4 @@ class Discord:
                 self.send_to_discord_webhook(post, game, icon, section)
             else:
                 logger.exception(err)
-        else:
-            logger.debug(
-                f"Payload delivered successfully, code {result.status_code}.")
         sleep(5)
