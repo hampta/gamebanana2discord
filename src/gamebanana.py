@@ -5,7 +5,7 @@ from config import BASE_URL
 class GameBanana:
 
     def __init__(self, games_ids) -> None:
-        self.games = self.get_bulk_games(games_ids)
+        self.games: dict = self.get_bulk_games(games_ids)
 
     def get_game_info(self, game_id) -> list:
         return requests.get(f"{BASE_URL}/Member/UiConfig?_sUrl=%2Fgames%2F{game_id}").json()
@@ -23,5 +23,6 @@ class GameBanana:
             return request.json()['_aFiles'][0]['_sDownloadUrl']
         return None
 
-    def get_bulk_games(self, ids) -> list:
-        return [self.get_game_info(id)['_aGame'] for id in ids]
+    def get_bulk_games(self, ids) -> dict:
+        tmp = [self.get_game_info(id)['_aGame'] for id in ids]
+        return {int(item["_idRow"]): item for item in tmp}

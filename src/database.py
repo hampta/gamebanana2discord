@@ -61,6 +61,21 @@ class Database:
             f'SELECT last_post_id FROM posts WHERE game_id = {game_id}')
         return None if self.cursor.rowcount == 0 else self.cursor.fetchone()[0]
 
+    def __get_last_posts(self):
+        self.cursor.execute(
+            'SELECT game_id, last_post_id FROM posts')
+        return self.cursor.fetchall()
+
+    def __add_game(self, game_id):
+        self.cursor.execute(
+            f'INSERT INTO posts (game_id, last_post_id) VALUES ({game_id}, 0)')
+        self.conn.commit()
+
+    def __get_games(self):
+        self.cursor.execute(
+            'SELECT game_id FROM posts')
+        return self.cursor.fetchall()
+
     def create_table(self):
         return self.__execute(self.__create_table)
 
@@ -73,5 +88,14 @@ class Database:
     def get_last_post(self, game_id):
         return self.__execute(self.__get_last_post, game_id)
 
+    def get_last_posts(self):
+        return self.__execute(self.__get_last_posts)
+
     def update_or_create_last_post(self, game_id, post_id):
         return self.__execute(self.__update_or_create_last_post, game_id, post_id)
+
+    def add_games(self, game_id):
+        return self.__execute(self.__add_game, game_id)
+    
+    def get_games(self):
+        return self.__execute(self.__get_games)

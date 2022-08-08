@@ -7,3 +7,4 @@ DOWNLOAD_ICON = 'https://cdn.discordapp.com/attachments/942477980167446538/10049
 DATABASE_URL = getenv('DATABASE_URL')
 WEBHOOK_URL = getenv('WEBHOOK_URL')
 TIME_SLEEP = int(getenv('TIME_SLEEP') or 15 * 60)
+REPOST_SUBMISSIONS = ["Mod"]
