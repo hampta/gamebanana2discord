@@ -8,7 +8,8 @@ class GameBanana:
         self.games: dict = self.get_bulk_games(games_ids)
 
     def get_game_info(self, game_id) -> list:
-        return requests.get(f"{BASE_URL}/Member/UiConfig?_sUrl=%2Fgames%2F{game_id}").json()
+        request = requests.get(f"{BASE_URL}/Member/UiConfig?_sUrl=%2Fgames%2F{game_id}")
+        return request.json()
 
     def get_feed(self, game_id: int, page=1, perpage=50, mode="new") -> str:
         return requests.get(f"{BASE_URL}/Util/Game/Submissions?_idGameRow={game_id}&_nPage={page}&_nPerpage={perpage}&_sMode={mode}").json()

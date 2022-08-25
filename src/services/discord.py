@@ -7,12 +7,11 @@ from time import sleep
 from src.utils import create_embed
 
 
-
 class Discord:
-    
+
     def __init__(self):
         self.rate_limit = 0
-    
+
     def send_to_discord_webhook(self, post, game, icon, section):
         if self.rate_limit > 0:
             sleep(self.rate_limit)
