@@ -1,7 +1,7 @@
 # fly.toml file generated for gamebanana2discord on 2022-11-15T00:06:53+02:00
 
 app = "gamebanana2discord"
-kill_signal = "SIGINT"
+kill_signal = "SIGKILL"
 kill_timeout = 5
 processes = []
 

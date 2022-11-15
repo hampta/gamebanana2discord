@@ -46,7 +46,7 @@ def create_embed(post, game_name, game_icon_url, section):
                 'author': {},
                 "color": 0x00ff00,
                 "image": {
-                    "url": post["_aEmbeddables"]["_sEmbeddableImageBaseUrl"] + "?type=sd_image",
+                    "url": f'{post["_aEmbeddables"]["_sEmbeddableImageBaseUrl"]}?type=sd_image',
                 },
                 "footer": {
                     "text": post['_aSubmitter']['_sName'],
@@ -90,5 +90,6 @@ def create_embed(post, game_name, game_icon_url, section):
         }
     if post["_bIsNsfw"]:
         embed['embeds'][0]['color'] = 0xff0000
-        embed['embeds'][0]['image'] |= {"url": "https://cdn.discordapp.com/attachments/942477980167446538/1005394994653311016/unknown.png"}
+        embed['embeds'][0]['image'] |= {
+            "url": "https://cdn.discordapp.com/attachments/942477980167446538/1005394994653311016/unknown.png"}
     return embed

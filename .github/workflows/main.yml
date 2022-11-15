@@ -12,6 +12,6 @@ jobs:
       - name: Install flyctl via https://github.com/superfly/flyctl-actions
         uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Deploy
-        run: flyctl deploy --remote-only --auto-confirm --detach
+        run: flyctl deploy --remote-only --detach
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
