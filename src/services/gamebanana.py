@@ -12,7 +12,7 @@ class GameBanana:
         return request.json()
 
     def get_feed(self, game_id: int, page=1, perpage=50, mode="new") -> str:
-        return requests.get(f"{BASE_URL}/Util/Game/Submissions?_idGameRow={game_id}&_nPage={page}&_nPerpage={perpage}&_sMode={mode}").json()
+        return requests.get(f"{BASE_URL}/Game/{game_id}/Subfeed?_nPage={page}&_nPerpage={perpage}&_sSort={mode}").json()['_aRecords']
 
     def get_mod_info(self, submission_type, id) -> dict:
         return requests.get(f"{BASE_URL}/{submission_type}/{id}/ProfilePage").json()

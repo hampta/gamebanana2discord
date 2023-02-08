@@ -31,7 +31,7 @@ class Gamebanana2Discord():
 
     def check_game(self, game_id, last_post):
         logger.info(f"Processing game {game_id}")
-        feed = self.gb.get_feed(game_id)['_aRecords']
+        feed = self.gb.get_feed(game_id)
         game = self.gb.games[game_id]
         for post in feed[::-1]:
             if last_post is None or post['_tsDateAdded'] > last_post and post['_sSingularTitle'] in REPOST_SUBMISSIONS:

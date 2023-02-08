@@ -46,7 +46,7 @@ def create_embed(post, game_name, game_icon_url, section):
                 'author': {},
                 "color": 0x00ff00,
                 "image": {
-                    "url": f'{post["_aEmbeddables"]["_sEmbeddableImageBaseUrl"]}?type=sd_image',
+                    "url": f'https://images.gamebanana.com/img/ss/mods/{post["_aPreviewMedia"]["_aImages"][0]["_sFile"]}',
                 },
                 "footer": {
                     "text": post['_aSubmitter']['_sName'],
