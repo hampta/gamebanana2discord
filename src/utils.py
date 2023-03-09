@@ -46,7 +46,7 @@ def create_embed(post, game_name, game_icon_url, section):
                 'author': {},
                 "color": 0x00ff00,
                 "image": {
-                    "url": f'https://images.gamebanana.com/img/ss/mods/{post["_aPreviewMedia"]["_aImages"][0]["_sFile"]}',
+                    "url": f'{post["_aPreviewMedia"]["_aImages"][0]["_sBaseUrl"]}/{post["_aPreviewMedia"]["_aImages"][0]["_sFile"]}',
                 },
                 "footer": {
                     "text": post['_aSubmitter']['_sName'],
@@ -88,7 +88,7 @@ def create_embed(post, game_name, game_icon_url, section):
             "url": post["_aFiles"][0]["_sDownloadUrl"],
             "icon_url": DOWNLOAD_ICON,
         }
-    if post["_bIsNsfw"]:
+    if post["_sInitialVisibility"] != "show":
         embed['embeds'][0]['color'] = 0xff0000
         embed['embeds'][0]['image'] |= {
             "url": "https://cdn.discordapp.com/attachments/942477980167446538/1005394994653311016/unknown.png"}
