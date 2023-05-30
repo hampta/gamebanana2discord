@@ -1,6 +1,9 @@
 from os import getenv
+from dotenv import load_dotenv
 
-API_URL:str = "https://gamebanana.com/apiv10"
+load_dotenv()
+
+API_URL: str = "https://gamebanana.com/apiv10"
 GAMES_ID: list[int] = [int(i) for i in getenv("GAMES_ID").replace(" ", "").split(",")]
 DOWNLOAD_ICON: str = 'https://cdn.discordapp.com/attachments/942477980167446538/1004980354819559435/icon_sheet.png'
 DATABASE_URL: str = getenv('DATABASE_URL')
