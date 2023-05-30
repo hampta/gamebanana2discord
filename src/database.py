@@ -1,17 +1,13 @@
-import psycopg2
-import psycopg2.extras
-from config import DATABASE_URL
+from config import DatabaseConfig as db_config
 from loguru import logger
 
+if db_config.database_type == "sqlite":
+    import sqlite3 
+
+if db_config.database_type == "postgres":
+    import psycopg2
 
 class Database:
-    temp = DATABASE_URL.split('//')[1].split(':')
-    username = temp[0]
-    password = temp[1].split('@')[0]
-    host = temp[1].split('@')[1].split('/')[0]
-    port = temp[2].split('/')[0]
-    database = temp[2].split('/')[1]
-
     def __init__(self) -> None:
         self.conn = None
         self.connect()
@@ -19,10 +15,17 @@ class Database:
     def connect(self):
         if self.conn is not None:
             self.conn.close()
-        self.conn = psycopg2.connect(
-            f'user={self.username} password={self.password} host={self.host} port={self.port} dbname={self.database}')
+        if db_config.database_type == "sqlite":
+            self.conn = sqlite3.connect(db_config.database)
+        if db_config.database_type == "postgres":
+            self.conn = psycopg2.connect(
+                f'user={db_config.username} password={db_config.password} host={db_config.host} port={db_config.port} dbname={db_config.database}')
         logger.info("Connnect to database")
         self.cursor = self.conn.cursor()
+        # self.conn = psycopg2.connect(
+        #     f'user={db_config.username} password={db_config.password} host={db_config.host} port={db_config.port} dbname={db_config.database}')
+        # logger.info("Connnect to database")
+        # self.cursor = self.conn.cursor()
 
     def __execute(self, func: callable, *args, **kwargs):
         try:
