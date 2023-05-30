@@ -3,7 +3,8 @@ A simple script to post GameBanana updates to a Discord channel.
 
 ## Requirements
 - Python 3.6+
-
+- PostgreSQL or MySQL database
+  
 ## Installation
 - Clone the repository
 - Install the requirements with `pip install -r requirements.txt`
